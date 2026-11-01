@@ -29,6 +29,7 @@ function prune(data) {
 function totalOf(counts) {
   return (counts.maimai + counts.chunithm + counts.ongeki + counts.taiko) * 100 + counts.freedom * 200;
 }
+const allowed=['maimai','freedom','chunithm','ongeki','taiko'];
 
 app.get('/api/state', (req,res) => { const d=readData(); prune(d); writeData(d); res.json(d); });
 app.post('/api/start', (req,res) => {
@@ -37,10 +38,21 @@ app.post('/api/start', (req,res) => {
   writeData(d); res.json(d);
 });
 app.post('/api/add/:game', (req,res) => {
-  const allowed=['maimai','freedom','chunithm','ongeki','taiko']; const game=req.params.game;
+  const game=req.params.game;
   if(!allowed.includes(game)) return res.status(400).json({error:'invalid game'});
   const d=readData(); if(!d.activeSession) return res.status(400).json({error:'no active session'});
   d.activeSession.counts[game]++; d.activeSession.actions.push(game); writeData(d); res.json(d);
+});
+app.post('/api/sub/:game', (req,res) => {
+  const game=req.params.game;
+  if(!allowed.includes(game)) return res.status(400).json({error:'invalid game'});
+  const d=readData(); if(!d.activeSession) return res.status(400).json({error:'no active session'});
+  if(d.activeSession.counts[game]>0){
+    d.activeSession.counts[game]--;
+    const i=d.activeSession.actions.lastIndexOf(game);
+    if(i!==-1)d.activeSession.actions.splice(i,1);
+  }
+  writeData(d); res.json(d);
 });
 app.post('/api/undo', (req,res) => {
   const d=readData(); if(!d.activeSession || !d.activeSession.actions.length) return res.json(d);
@@ -55,4 +67,4 @@ app.post('/api/finish', (req,res) => {
   d.activeSession=null; prune(d); writeData(d); res.json(d);
 });
 
-app.listen(PORT, '0.0.0.0', () => console.log(`音ゲークレ計算: http://localhost:${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`音ゲークレジット管理: http://localhost:${PORT}`));
