@@ -66,5 +66,24 @@ app.post('/api/finish', (req,res) => {
   else d.days.push(record);
   d.activeSession=null; prune(d); writeData(d); res.json(d);
 });
+app.post('/api/day/:date', (req,res) => {
+  const date=req.params.date;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)) return res.status(400).json({error:'invalid date'});
+  const input=req.body && req.body.counts;
+  if(!input) return res.status(400).json({error:'counts required'});
+  const counts={};
+  for(const game of allowed){
+    const value=Number(input[game]);
+    if(!Number.isInteger(value) || value<0 || value>9999) return res.status(400).json({error:`invalid count: ${game}`});
+    counts[game]=value;
+  }
+  const d=readData();
+  const existing=d.days.find(x=>x.date===date);
+  if(!existing) return res.status(404).json({error:'record not found'});
+  existing.counts=counts;
+  existing.total=totalOf(counts);
+  existing.editedAt=new Date().toISOString();
+  prune(d); writeData(d); res.json(d);
+});
 
 app.listen(PORT, '0.0.0.0', () => console.log(`音ゲークレジット管理: http://localhost:${PORT}`));
