@@ -15,5 +15,7 @@
 <div id="sessionActions" class="actions hidden"><button id="finish" class="danger">今日の音ゲー終了・集計確定</button></div>
 <section class="summary"><div><p>今月の合計</p><strong id="monthTotal">¥0</strong></div><button id="prevMonth" class="monthNav">‹</button><h2 id="monthTitle"></h2><button id="nextMonth" class="monthNav">›</button></section>
 <section class="calendar"><div class="week"><span>日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span></div><div id="calendarGrid" class="grid"></div></section>
-<p class="note">記録は今月と前月のみ保持します。</p>
-</main><script src="/app.js"></script></body></html>
+<p class="note">金額が入っている日を押すと内訳の確認・編集ができます。記録は今月と前月のみ保持します。</p>
+</main>
+<div id="dayModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="dayModalTitle"><div class="modalCard"><div class="modalHeader"><div><p class="eyebrow">DAILY RECORD</p><h2 id="dayModalTitle">記録の内訳</h2></div><button id="closeDayModal" class="closeButton" aria-label="閉じる">×</button></div><div id="dayEditor" class="dayEditor"></div><div class="modalTotal"><span>合計</span><strong id="dayEditTotal">¥0</strong></div><div class="modalActions"><button id="cancelDayEdit" class="secondary">キャンセル</button><button id="saveDayEdit" class="primary">変更を保存</button></div></div></div>
+<script src="/app.js"></script></body></html>
